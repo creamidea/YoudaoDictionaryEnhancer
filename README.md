@@ -1,0 +1,2 @@
+# YoudaoDictionaryEnhancer
+search words Celerity
