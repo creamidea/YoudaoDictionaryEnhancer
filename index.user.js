@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         Youdao Dictionary Enhancer
 // @namespace    http://tampermonkey.net/
-// @version      1.1.2
-// @description  search words Celerity
+// @homepage     https://github.com/creamidea/YoudaoDictionaryEnhancer
+// @version      1.1.4
+// @description  Search words in Celerity
 // @author       creamidea
-// @match        http://dict.youdao.com/*
+// @match        http://*youdao.com/*
 // @require      http://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js
 // @resource     nprogress_css http://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css
 // @resource     etymoline_css http://www.etymonline.com/style.css
@@ -37,7 +38,8 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
             configure: function (){},
         };
     var ETYMONLINEHTTP = 'http://www.etymonline.com';
-    var YOUDAOHTTP = 'http://dict.youdao.com';
+    var YOUDAOHTTP = $(location).attr('protocol')+'//'+$(location).attr('hostname');
+    debugger
     var $scontainer = $('#scontainer');
     var $query = $('#query');
     var $topImgAd = $('#topImgAd');
