@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youdao Dictionary Enhancer
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.1.1
 // @description  search words Celerity
 // @author       creamidea
 // @match        http://dict.youdao.com/*
@@ -15,7 +15,7 @@
 // @grant        GM_getResourceText
 // @grant        GM_xmlhttpRequest
 // @connect      www.etymonline.com
-// @updateURL
+// @updateURL    https://openuserjs.org/meta/creamidea/Youdao_Dictionary_Enhancer.meta.js
 // ==/UserScript==
 
 // changelog:
