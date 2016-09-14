@@ -1,5 +1,6 @@
 # YoudaoDictionaryEnhancer
 Search words in Celerity
+
 增强 Youdao Dictionary Web 版的功能
 
 # Screenshot
