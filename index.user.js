@@ -2,7 +2,7 @@
 // @name         Youdao Dictionary Enhancer
 // @namespace    http://tampermonkey.net/
 // @homepage     https://github.com/creamidea/YoudaoDictionaryEnhancer
-// @version      1.1.5
+// @version      1.1.6
 // @description  Search words in Celerity
 // @author       creamidea
 // @match        http://*.youdao.com/*
@@ -107,7 +107,13 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
     NProgress.inc(0.2);
 
     // request the etymoline.com page
-    request(ETYMONLINEHTTP+'/index.php?term='+encodeURIComponent($query.val()));
+    var $phrsListTab = $('#phrsListTab');
+    var queryWord;
+    if ($phrsListTab.length > 0 && $phrsListTab.find('.keyword').length > 0)
+        queryWord = $phrsListTab.find('.keyword').text();
+    else
+        queryWord = $query.val();
+    request(ETYMONLINEHTTP+'/index.php?term='+encodeURIComponent(queryWord));
 
     // remove the ad
     $topImgAd.remove();
