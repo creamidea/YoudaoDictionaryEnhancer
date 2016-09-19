@@ -4,7 +4,7 @@ Search words in Celerity
 增强 Youdao Dictionary Web 版的功能
 
 # Screenshot
-![screenshot](https://cloud.githubusercontent.com/assets/1274730/18500388/9bd06dcc-7a79-11e6-932f-83930af061b7.png)
+![screenshot](https://cloud.githubusercontent.com/assets/1274730/18627710/f405030e-7e8e-11e6-9f79-f2631eae382d.png)
 
 # Function
 + 去掉顶部、右侧广告和顶部导航栏
