@@ -2,7 +2,7 @@
 // @name         Youdao Dictionary Enhancer
 // @namespace    http://tampermonkey.net/
 // @homepage     https://github.com/creamidea/YoudaoDictionaryEnhancer
-// @version      1.1.7
+// @version      1.1.8
 // @description  Search words in Celerity
 // @author       creamidea
 // @match        http://*.youdao.com/*
@@ -24,8 +24,13 @@
 // version 1.0 initial release
 
 GM_addStyle(GM_getResourceText("nprogress_css"));
-GM_addStyle(".youdao-trans-icon {position: absolute;border-radius: 5px;padding: 3px; background-color: rgb(245, 245, 245);box-sizing: content-box;cursor: pointer;height: 18px;width: 18px;z-index: 2147483647;border: 1px solid rgb(220, 220, 220);color: rgb(51, 51, 51);}");
-GM_addStyle(".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 0;color: rebeccapurple;}");
+GM_addStyle('body{font-famile:"Hiragino Sans GB",STHeiti,"Microsoft YaHei","Wenquanyi Micro Hei","WenQuanYi Micro Hei Mono","WenQuanYi Zen Hei","WenQuanYi Zen Hei Mono",LiGothicMed}');
+GM_addStyle('.youdao-trans-icon {position: absolute;border-radius: 5px;padding: 3px; background-color: rgb(245, 245, 245);box-sizing: content-box;cursor: pointer;height: 18px;width: 18px;z-index: 2147483647;border: 1px solid rgb(220, 220, 220);color: rgb(51, 51, 51);}');
+GM_addStyle('.etymoline .hint {text-align: center;font-size: 24px;margin: 24px 0;color: rebeccapurple;}');
+GM_addStyle('#container{background: #f6f4ec;border-radius: 6px;box-shadow: 2px 2px 9px 1px gray;padding-left: 16px;padding-right: 16px;padding-bottom: 26px;margin-top: 24px;}');
+GM_addStyle('.keyword{font-family: Georgia,"Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Arial,sans-serif; font-size: 39px;border-bottom: 2px gray dotted;}');
+GM_addStyle('#phrsListTab .trans-container>ul{font-size: 16px;} #phrsListTab .trans-container>ul>li{margin: 4px auto;}');
+GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
 
 (function () {
     'use strict';
