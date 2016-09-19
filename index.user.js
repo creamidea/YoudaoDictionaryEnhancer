@@ -23,22 +23,22 @@
 // version 1.1 add translation function in etymoline area
 // version 1.0 initial release
 
-GM_addStyle (GM_getResourceText("nprogress_css"));
-GM_addStyle (".youdao-trans-icon {position: absolute;border-radius: 5px;padding: 3px; background-color: rgb(245, 245, 245);box-sizing: content-box;cursor: pointer;height: 18px;width: 18px;z-index: 2147483647;border: 1px solid rgb(220, 220, 220);color: rgb(51, 51, 51);}");
-GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 0;color: rebeccapurple;}");
+GM_addStyle(GM_getResourceText("nprogress_css"));
+GM_addStyle(".youdao-trans-icon {position: absolute;border-radius: 5px;padding: 3px; background-color: rgb(245, 245, 245);box-sizing: content-box;cursor: pointer;height: 18px;width: 18px;z-index: 2147483647;border: 1px solid rgb(220, 220, 220);color: rgb(51, 51, 51);}");
+GM_addStyle(".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 0;color: rebeccapurple;}");
 
-(function() {
+(function () {
     'use strict';
     if (NProgress === undefined)
         NProgress = {
-            set: function (){},
-            start: function (){},
-            inc: function (){},
-            done: function (){},
-            configure: function (){},
+            set: function () { },
+            start: function () { },
+            inc: function () { },
+            done: function () { },
+            configure: function () { },
         };
     var ETYMONLINEHTTP = 'http://www.etymonline.com';
-    var YOUDAOHTTP = $(location).attr('protocol')+'//'+$(location).attr('hostname');
+    var YOUDAOHTTP = $(location).attr('protocol') + '//' + $(location).attr('hostname');
     var $scontainer = $('#scontainer');
     var $query = $('#query');
     var $topImgAd = $('#topImgAd');
@@ -54,7 +54,7 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
         // open the next page in the etymoline.com iframe
         event.preventDefault();
         var target = event.target;
-        request(ETYMONLINEHTTP+target.attributes.href.value);
+        request(ETYMONLINEHTTP + target.attributes.href.value);
     };
     window[openURLFunName] = function (event) {
         event.preventDefault();
@@ -64,22 +64,22 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
         var sel = window.getSelection();
         var range = document.createRange();
         var targetSel = this.getSelection();
-        var $sltContainer = $('#'+sltContainerName);
+        var $sltContainer = $('#' + sltContainerName);
         var selectionText = encodeURIComponent(targetSel.toString());
-        var $youdaoSearchButton = $('#'+youdaoSearchButtonId);
+        var $youdaoSearchButton = $('#' + youdaoSearchButtonId);
         if ($sltContainer.length === 0)
-            $sltContainer = $('<div id='+sltContainerName+' />').appendTo('body');
+            $sltContainer = $('<div id=' + sltContainerName + ' />').appendTo('body');
         if ($youdaoSearchButton.length === 0)
-            $youdaoSearchButton = $('<butotn id='+youdaoSearchButtonId+' class="youdao-trans-icon">').append('<a href="javascript: void(0)"><img src="http://shared.ydstatic.com/images/favicon.ico"></a>').appendTo('body');
+            $youdaoSearchButton = $('<butotn id=' + youdaoSearchButtonId + ' class="youdao-trans-icon">').append('<a href="javascript: void(0)"><img src="http://shared.ydstatic.com/images/favicon.ico"></a>').appendTo('body');
         if (selectionText === "") {
-            $youdaoSearchButton.css({display: 'none'});
+            $youdaoSearchButton.css({ display: 'none' });
             return;
         }
 
-        $sltContainer.css({position: "absolute",zIndex: -1,top: "-1000px"}).text(selectionText);
+        $sltContainer.css({ position: "absolute", zIndex: -1, top: "-1000px" }).text(selectionText);
         setTimeout(function () {
-            $youdaoSearchButton.find('a').attr('href', YOUDAOHTTP + '/w/'+selectionText+'/')
-                .end().css({left: $('#'+injectEtymolineName).data('click-x'), top: $('#'+injectEtymolineName).data('click-y'), display: 'block'});
+            $youdaoSearchButton.find('a').attr('href', YOUDAOHTTP + '/w/' + selectionText + '/')
+                .end().css({ left: $('#' + injectEtymolineName).data('click-x'), top: $('#' + injectEtymolineName).data('click-y'), display: 'block' });
         }, 24);
 
         range.selectNode($sltContainer[0]);
@@ -95,14 +95,14 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
 
     // create the frame wrapper
     var $frameWrapper =
-        $('<div id='+injectEtymolineName+'-wrapper class="etymoline"/>').css({border:0, width: '100%'}).html(
+        $('<div id=' + injectEtymolineName + '-wrapper class="etymoline"/>').css({ border: 0, width: '100%' }).html(
             '<div class="hint">Etymoline.com ...</div>');
     if ($webTrans.length === 0) return; // maybe no result :)
 
     $frameWrapper.insertBefore($webTrans);
 
     // set NProgress
-    NProgress.configure({parent: '#' + injectEtymolineName + '-wrapper'});
+    NProgress.configure({ parent: '#' + injectEtymolineName + '-wrapper' });
     NProgress.set(0.7);
     NProgress.inc(0.2);
 
@@ -113,7 +113,7 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
         queryWord = $phrsListTab.find('.keyword').text();
     else
         queryWord = $query.val();
-    setTimeout(function () {request(ETYMONLINEHTTP+'/index.php?term='+encodeURIComponent(queryWord));}, 0);
+    setTimeout(function () { request(ETYMONLINEHTTP + '/index.php?term=' + encodeURIComponent(queryWord)); }, 0);
 
     // remove the ad
     $topImgAd.remove();
@@ -126,22 +126,22 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
 
     // from: http://stackoverflow.com/a/12444641/1925954
     var keys = {};
-    function test_key(selkey){
+    function test_key(selkey) {
         var alias = {
-            "Ctrl":  17,
+            "Ctrl": 17,
             "Shift": 16,
-            "/":     191,
-            "a":     65,
-            "e":     69
+            "/": 191,
+            "a": 65,
+            "e": 69
         };
         return keys[selkey] || keys[alias[selkey]];
     }
-    function test_keys(){
+    function test_keys() {
         var i,
             keylist = arguments,
             status = true;
-        for(i = 0; i < keylist.length; i++){
-            if(!test_key(keylist[i])){
+        for (i = 0; i < keylist.length; i++) {
+            if (!test_key(keylist[i])) {
                 // status = false;
                 return false;
             }
@@ -178,23 +178,23 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
 
     // adjust the youdao css
     // move xxx
-    $('#container').css({width: "1000px"});
-    $('#results').css({width: "680px"});
-    $('#ads').css({width: "320px"});
+    $('#container').css({ width: "1000px" });
+    $('#results').css({ width: "680px" });
+    $('#ads').css({ width: "320px" });
     var transformToggle = [];
-    $('#eTransform .tabs').children().each(function(index, elt){
+    $('#eTransform .tabs').children().each(function (index, elt) {
         transformToggle.push(elt.innerText);
     });
-    $('#transformToggle').children().each(function(index, elt){
-        if(elt.id === 'wordGroup') return;
+    $('#transformToggle').children().each(function (index, elt) {
+        if (elt.id === 'wordGroup') return;
         var $clone = $(elt).clone();
-        $clone.addClass('follow').removeClass('hide').css({display: 'block'}).prepend('<p class="hd">'+transformToggle[index]+'</p>').next().css({marginTop: "8px"});
+        $clone.addClass('follow').removeClass('hide').css({ display: 'block' }).prepend('<p class="hd">' + transformToggle[index] + '</p>').next().css({ marginTop: "8px" });
         $clone.appendTo('#ads');
     });//.end().parent().remove();
-    $('#doc>.c-topbar-wrapper').css({height: "81px", top: "-42px"}).find('.c-subtopbar').remove();
-    $scontainer.css({marginTop: "42px"});
+    $('#doc>.c-topbar-wrapper').css({ height: "81px", top: "-42px" }).find('.c-subtopbar').remove();
+    $scontainer.css({ marginTop: "42px" });
 
-    function request (url) {
+    function request(url) {
         NProgress.start();
         var xhr = new GM_xmlhttpRequest({
             method: 'GET',
@@ -204,7 +204,7 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
         });
     }
 
-    function onreadystatechange (resp) {
+    function onreadystatechange(resp) {
         var readyState = resp.readyState;
         if (readyState === 0) {
             // Client has been created. open() not called yet.
@@ -215,7 +215,7 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
         } else if (readyState === 3) {
             // Downloading; responseText holds partial data.
         } else if (readyState === 4) {
-            switch(resp.status) {
+            switch (resp.status) {
                 case 200:
                     etymolineHandler(resp.responseText);
                     break;
@@ -226,39 +226,39 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
         }
     }
 
-    function etymolineHandler (responseText) {
+    function etymolineHandler(responseText) {
         var domParser = new DOMParser();
         var doc = domParser.parseFromString(responseText, 'text/html');
         var $dictionary = doc.querySelector('#dictionary');
         $dictionary.style.border = 0;
         $dictionary.style.marginBottom = 0;
-        var $frame = $('#'+injectEtymolineName);
+        var $frame = $('#' + injectEtymolineName);
         if ($frame.length === 0) {
-            $frame = $('<iframe id="'+injectEtymolineName+'" />').css({border:0, width: '100%', maxHeight: '600px'});
+            $frame = $('<iframe id="' + injectEtymolineName + '" />').css({ border: 0, width: '100%', maxHeight: '600px' });
             $frameWrapper.append($frame);
             $frameWrapper.find('.hint').remove(); // remove the hint.
             $frame.contents().find("head")
-                .append('<style>'+GM_getResourceText("etymoline_css")+'</style>')
-                .append('<style>'+GM_getResourceText("etymoline_font")+'</style>')
+                .append('<style>' + GM_getResourceText("etymoline_css") + '</style>')
+                .append('<style>' + GM_getResourceText("etymoline_font") + '</style>')
                 .append('<style>' +
-                        '.etymoline-footer {border: 0px;color: wheat;text-align: right;}' +
-                       '</style>');
+                '.etymoline-footer {border: 0px;color: wheat;text-align: right;}' +
+                '</style>');
             // $frame.contents().on('selectionchange', function () {debugger});
             $frame.contents()
                 .on('selectionchange', parent[proxySelection])
-                .on('mousemove', function (event) { $frame.data('click-x', $frame.offset().left + event.pageX); $frame.data('click-y', $frame.offset().top +  event.pageY - 30); })
-                .on('keydown', function (event) {globalKeydown(event);})
-                .on('keyup', function (event) {globalKeyup(event);});
+                .on('mousemove', function (event) { $frame.data('click-x', $frame.offset().left + event.pageX); $frame.data('click-y', $frame.offset().top + event.pageY - 30); })
+                .on('keydown', function (event) { globalKeydown(event); })
+                .on('keyup', function (event) { globalKeyup(event); });
         }
         $frame.contents().find("body")
             .html($dictionary)
             .append('<footer class="etymoline-footer">From: <a href="http://www.etymonline.com/index.php" style="color: wheat;" target="_blank">The Online Etymology Dictionary</a></footer>');
         // Some fix
         $frame.ready(function () {
-            $frame.css({height: $frame.contents().find("html").height() });
+            $frame.css({ height: $frame.contents().find("html").height() });
             $frame.contents().find("body img").map(function (index, img) {
                 // the resource path of dictionary png
-                img.src = ETYMONLINEHTTP+'/graphics/dictionary.gif';
+                img.src = ETYMONLINEHTTP + '/graphics/dictionary.gif';
                 return img;
             });
             $frame.contents().find("body a.dictionary").map(function (index, link) {
@@ -270,8 +270,8 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
                 // click the word
                 // link.onclick = parent[injectEtymolineName];
                 var oLink = new URL(link.href);
-                var term = oLink.search.slice(1).split('&').map(function(v){var _v = v.split('=');return {key: _v[0], value: _v[1]};}).filter(function(v){if(v.key==='term')return v;})[0];
-                link.href = YOUDAOHTTP+'/w/'+term.value+'/';
+                var term = oLink.search.slice(1).split('&').map(function (v) { var _v = v.split('='); return { key: _v[0], value: _v[1] }; }).filter(function (v) { if (v.key === 'term') return v; })[0];
+                link.href = YOUDAOHTTP + '/w/' + term.value + '/';
                 link.onclick = parent[openURLFunName];
                 //link.href = link.href.replace(new RegExp(YOUDAOHTTP), ETYMONLINEHTTP);
                 //link.target = '_blank';
@@ -290,18 +290,18 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
     }
 
     function makeId(len) {
-        if(isNaN(parseInt(len))) len = 8;
+        if (isNaN(parseInt(len))) len = 8;
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        for( var i=0; i < len; i++ )
+        for (var i = 0; i < len; i++)
             text += possible.charAt(Math.floor(Math.random() * possible.length));
 
         return text;
     }
 
-    function toggleHelp () {
-         console.log('Message for help. Comming soon...');
+    function toggleHelp() {
+        console.log('Message for help. Comming soon...');
     }
 
 })();
