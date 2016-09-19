@@ -2,7 +2,7 @@
 // @name         Youdao Dictionary Enhancer
 // @namespace    http://tampermonkey.net/
 // @homepage     https://github.com/creamidea/YoudaoDictionaryEnhancer
-// @version      1.1.6
+// @version      1.1.7
 // @description  Search words in Celerity
 // @author       creamidea
 // @match        http://*.youdao.com/*
@@ -113,7 +113,7 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
         queryWord = $phrsListTab.find('.keyword').text();
     else
         queryWord = $query.val();
-    request(ETYMONLINEHTTP+'/index.php?term='+encodeURIComponent(queryWord));
+    setTimeout(function () {request(ETYMONLINEHTTP+'/index.php?term='+encodeURIComponent(queryWord));}, 0);
 
     // remove the ad
     $topImgAd.remove();
@@ -148,7 +148,7 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
         }
         return status;
     }
-    $(document).keydown(function (event) {
+    function globalKeydown(event) {
         var keyCode = event.keyCode;
         keys[keyCode] = event.type === 'keydown';
         if (test_keys('Shift', 'e')) {
@@ -169,10 +169,12 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
             keys = {};
             return false; // to avoid input '/' in inputbox.
         }
-    }).keyup(function (event) {
+    }
+    function globalKeyup(event) {
         var keyCode = event.keyCode;
         keys[keyCode] = false;
-    });
+    }
+    $(document).keydown(globalKeydown).keyup(globalKeyup);
 
     // adjust the youdao css
     // move xxx
@@ -244,7 +246,9 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
             // $frame.contents().on('selectionchange', function () {debugger});
             $frame.contents()
                 .on('selectionchange', parent[proxySelection])
-                .on('mousemove', function (event) { $frame.data('click-x', $frame.offset().left + event.pageX); $frame.data('click-y', $frame.offset().top +  event.pageY - 30); });
+                .on('mousemove', function (event) { $frame.data('click-x', $frame.offset().left + event.pageX); $frame.data('click-y', $frame.offset().top +  event.pageY - 30); })
+                .on('keydown', function (event) {globalKeydown(event);})
+                .on('keyup', function (event) {globalKeyup(event);});
         }
         $frame.contents().find("body")
             .html($dictionary)
