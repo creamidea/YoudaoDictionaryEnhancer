@@ -2,10 +2,11 @@
 // @name         Youdao Dictionary Enhancer
 // @namespace    http://tampermonkey.net/
 // @homepage     https://github.com/creamidea/YoudaoDictionaryEnhancer
-// @version      1.1.8
+// @version      1.2.0
 // @description  Search words in Celerity
 // @author       creamidea
 // @match        http://*.youdao.com/*
+// @require      http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js
 // @require      http://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js
 // @resource     nprogress_css http://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css
 // @resource     etymoline_css http://www.etymonline.com/style.css
@@ -16,10 +17,12 @@
 // @grant        GM_getResourceText
 // @grant        GM_xmlhttpRequest
 // @connect      www.etymonline.com
+// @connect      www.google.com
 // @updateURL    https://openuserjs.org/meta/creamidea/Youdao_Dictionary_Enhancer.meta.js
 // ==/UserScript==
 
 // changelog:
+// version 1.2 add record of google define 
 // version 1.1 add translation function in etymoline area
 // version 1.0 initial release
 
@@ -27,10 +30,11 @@ GM_addStyle(GM_getResourceText("nprogress_css"));
 GM_addStyle('body{font-famile:"Hiragino Sans GB",STHeiti,"Microsoft YaHei","Wenquanyi Micro Hei","WenQuanYi Micro Hei Mono","WenQuanYi Zen Hei","WenQuanYi Zen Hei Mono",LiGothicMed}');
 GM_addStyle('.youdao-trans-icon {position: absolute;border-radius: 5px;padding: 3px; background-color: rgb(245, 245, 245);box-sizing: content-box;cursor: pointer;height: 18px;width: 18px;z-index: 2147483647;border: 1px solid rgb(220, 220, 220);color: rgb(51, 51, 51);}');
 GM_addStyle('.etymoline .hint {text-align: center;font-size: 24px;margin: 24px 0;color: rebeccapurple;}');
-GM_addStyle('#container{background: #f6f4ec;border-radius: 6px;box-shadow: 2px 2px 9px 1px gray;padding-left: 16px;padding-right: 16px;padding-bottom: 26px;margin-top: 24px;}');
+GM_addStyle('#container{background: #f6f4ec;border-radius: 6px;box-shadow: 2px 2px 9px 1px gray;padding-left: 16px;padding-right: 16px;padding-bottom: 26px;margin-top: 16px;}');
 GM_addStyle('.keyword{font-family: Georgia,"Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Arial,sans-serif; font-size: 39px;border-bottom: 2px gray dotted;}');
 GM_addStyle('#phrsListTab .trans-container>ul{font-size: 16px;} #phrsListTab .trans-container>ul>li{margin: 4px auto;}');
 GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
+GM_addStyle('.c-topbar-wrapper{box-shadow: 0 0 0 #fcfcfe;}');
 
 (function () {
     'use strict';
@@ -43,6 +47,7 @@ GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
             configure: function () { },
         };
     var ETYMONLINEHTTP = 'http://www.etymonline.com';
+    var GOOGLEHTTP = 'https://www.google.com';
     var YOUDAOHTTP = $(location).attr('protocol') + '//' + $(location).attr('hostname');
     var $scontainer = $('#scontainer');
     var $query = $('#query');
@@ -53,6 +58,12 @@ GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
     var proxySelection = 'proxySelection' + makeId(9);
     var sltContainerName = 'selectionContainer' + makeId(9);
     var youdaoSearchButtonId = 'youdaoSearchButton' + makeId(9);
+    var googleFrameId = 'googleResult' + makeId(9);
+
+    // remove the ad
+    $topImgAd.remove();
+    $('#baidu-adv').remove();
+    $('#follow').remove();
 
     // window global function. It is the callback in the iframe
     window[injectEtymolineName] = function (event) {
@@ -102,9 +113,13 @@ GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
     var $frameWrapper =
         $('<div id=' + injectEtymolineName + '-wrapper class="etymoline"/>').css({ border: 0, width: '100%' }).html(
             '<div class="hint">Etymoline.com ...</div>');
+    // var $googleFrameWrapper =
+    //    $('<div id=' + googleFrameId + '-wrapper class="google-frame"/>').css({ border: 0, width: '100%' }).html(
+    //        '<div class="hint">google.com ...</div>');
     if ($webTrans.length === 0) return; // maybe no result :)
 
     $frameWrapper.insertBefore($webTrans);
+    // $googleFrameWrapper.insertBefore($webTrans);
 
     // set NProgress
     NProgress.configure({ parent: '#' + injectEtymolineName + '-wrapper' });
@@ -118,12 +133,10 @@ GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
         queryWord = $phrsListTab.find('.keyword').text();
     else
         queryWord = $query.val();
-    setTimeout(function () { request(ETYMONLINEHTTP + '/index.php?term=' + encodeURIComponent(queryWord)); }, 0);
+    setTimeout(function () { NProgress.start(); request(ETYMONLINEHTTP + '/index.php?term=' + encodeURIComponent(queryWord), etymolineHandler); }, 0);
+    setTimeout(function () { request(GOOGLEHTTP + '/search?sclient=psy-ab&hl=en&fp=1&num=1&start=0&q=' + encodeURIComponent('define: ' + queryWord), googleHandler); }, 60);
 
-    // remove the ad
-    $topImgAd.remove();
-    $('#baidu-adv').remove();
-    $('#follow').remove();
+    // set the default explanation
     $('#webTrans .tabs a').each(function (i, link) {
         if (link.innerText === '英英释义')
             link.click();
@@ -182,7 +195,7 @@ GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
     $(document).keydown(globalKeydown).keyup(globalKeyup);
 
     // adjust the youdao css
-    // move xxx
+    // move top navigation
     $('#container').css({ width: "1000px" });
     $('#results').css({ width: "680px" });
     $('#ads').css({ width: "320px" });
@@ -199,17 +212,16 @@ GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
     $('#doc>.c-topbar-wrapper').css({ height: "81px", top: "-42px" }).find('.c-subtopbar').remove();
     $scontainer.css({ marginTop: "42px" });
 
-    function request(url) {
-        NProgress.start();
+    function request(url, callback) {
         var xhr = new GM_xmlhttpRequest({
             method: 'GET',
             url: url,
             // anonymous: true,
-            onreadystatechange: onreadystatechange,
+            onreadystatechange: function (resp) { onreadystatechange(resp, callback); }
         });
     }
 
-    function onreadystatechange(resp) {
+    function onreadystatechange(resp, callback) {
         var readyState = resp.readyState;
         if (readyState === 0) {
             // Client has been created. open() not called yet.
@@ -222,12 +234,12 @@ GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
         } else if (readyState === 4) {
             switch (resp.status) {
                 case 200:
-                    etymolineHandler(resp.responseText);
+                    // etymolineHandler(resp.responseText);
+                    callback(resp.responseText);
                     break;
                 default:
                     GM_log(['Ger Error: ', '\nState: ', resp.readyState, '\nMessage: ', resp.responseText].join(''));
             }
-            NProgress.done();
         }
     }
 
@@ -239,7 +251,7 @@ GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
         $dictionary.style.marginBottom = 0;
         var $frame = $('#' + injectEtymolineName);
         if ($frame.length === 0) {
-            $frame = $('<iframe id="' + injectEtymolineName + '" />').css({ border: 0, width: '100%', maxHeight: '600px' });
+            $frame = $('<iframe id="' + injectEtymolineName + '" />').css({ border: 0, width: '100%', maxHeight: '240px' });
             $frameWrapper.append($frame);
             $frameWrapper.find('.hint').remove(); // remove the hint.
             $frame.contents().find("head")
@@ -292,6 +304,130 @@ GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
                 return link;
             });
         });
+        NProgress.done();
+    }
+
+    function googleHandler(text) {
+        // console.log(text);
+        var googleDefinationHTML = parseJEAPI(text);
+        var domParser = new DOMParser();
+        var $doc = domParser.parseFromString(googleDefinationHTML, 'text/html');
+        if (!$doc.querySelectorAll('.g.tpo.mod')) return; // has no defination
+
+        var $googleFrame = $('#' + googleFrameId);
+        if ($googleFrame.length === 0) $googleFrame = $('<iframe id=' + googleFrameId + ' />').css({ border: 0, width: '616px' }).appendTo('body');
+
+        // trim doc
+        // $doc.querySelector('.srg').remove();
+        $doc.querySelector('.hd').remove();
+        $doc.querySelector('hr').remove();
+
+        $googleFrame.contents().find('head').html($doc.head.innerHTML);
+        $googleFrame.contents().find('body').html('<h1>被你发现了 XD</h1>' + $doc.body.innerHTML);
+        $googleFrame.css({ height: $googleFrame.contents().height() });
+
+        // after render the html, you can get these information.
+        if ($googleFrame.contents().find('.vk_ans')[0] === undefined) return;
+        var keyword = $googleFrame.contents().find('.vk_ans')[0].innerHTML;
+        $('.keyword').html(keyword);
+
+        // get the imags of "origin" and "use over time"
+        $googleFrame.contents().find('.xpdxpnd img').closest('.xpdxpnd').each(function (index, elt) {
+            var $elt = $(elt);
+            $elt.find('img').attr('onload', '').end()
+                .find('a').attr('onmousedown', '');
+            if ($elt.find('.vk_sh.vk_gy').text().toUpperCase() === 'ORIGIN') {
+                $elt.insertBefore('#webTrans');
+            } else {
+                //$elt.prependTo('#ads');
+                $elt.appendTo('#ads');
+            }
+        });
+
+        /*
+        // get the changin of the speech
+        var speechsContainer = [];
+        var $phrsListTab = $('#phrsListTab');
+        var $speechs = $googleFrame.contents().find('.lr_dct_sf_h');
+        var $speechsDetail = $googleFrame.contents().find('.vk_gy');
+        $speechs.each(function (index, $speech) {
+            // speechsContainer.push([$speech, $speechsDetail[index]]);
+            $phrsListTab.append($speech).append($speechsDetail[index]);
+        });
+        */
+        return;
+    }
+    var googleJs = '!function(){window.google={},google.kHL="en",google.c={c:{a:!0}},google.time=function(){return(new Date).getTime()},google.timers={},google.startTick=function(o,e){var g=e&&google.timers[e].t?google.timers[e].t.start:google.time();google.timers[o]={t:{start:g},e:{},it:{},m:{}},(g=window.performance)&&g.now&&(google.timers[o].wsrt=Math.floor(g.now()))},google.tick=function(o,e,g){google.timers[o]||google.startTick(o),g=g||google.time(),e instanceof Array||(e=[e]);for(var t=0;t<e.length;++t)google.timers[o].t[e[t]]=g},google.afte=!0,google.aft=function(o){google.c.c.a&&google.afte&&google.tick("aft",o.id||o.src||o.name)}}();';
+    function QS_kga(a) {
+        QS_gda = a;
+        QS_le(QS_7d, QS_9d) || google.dclc(QS_d(a, QS_7d, !0))
+    }
+    function QS_sga(a) {
+        a = String(a);
+        for (var b = ['"'], c = 0; c < a.length; c++) {
+            var d = a.charAt(c), e = d.charCodeAt(0),
+                f = c + 1, g;
+            if (!(g = QS_kga[d])) {
+                if (!(31 < e && 127 > e))
+                    if (d in QS_jga)
+                        d = QS_jga[d];
+                    else if (d in QS_kga)
+                        d = QS_jga[d] = QS_kga[d];
+                    else {
+                        g = d.charCodeAt(0);
+                        if (31 < g && 127 > g)
+                            e = d;
+                        else {
+                            if (256 > g) {
+                                if (e = "\\x",
+                                    16 > g || 256 < g)
+                                    e += "0"
+                            } else
+                                e = "\\u",
+                                    4096 > g && (e += "0");
+                            e += g.toString(16).toUpperCase()
+                        }
+                        d = QS_jga[d] = e
+                    }
+                g = d
+            }
+            b[f] = g
+        }
+        b.push('"');
+        return b.join("")
+    }
+    function parseJEAPI(a) {
+        let e = a,
+            f = [],
+            g, l, m, n;
+
+        for (g = l = 0; -1 != l && g >= l;) {
+            l = e.indexOf("<script", g),
+                -1 != l && (m = e.indexOf(">", l) + 1,
+                    g = e.indexOf("\x3c/script>", m),
+                    0 < m && g > m && f.push(e.substring(m, g)));
+        }
+        e = [];
+        for (m = 0; m < f.length; ++m)
+            g = f[m],
+                g = g.replace(/location\.href/gi, QS_sga(l)),
+                e.push(g);
+        if (0 < e.length) {
+            f = e.join(";");
+            f = f.replace(/,"is":_loc/g, "");
+            f = f.replace(/,"ss":_ss/g, "");
+            f = f.replace(/,"fp":fp/g, "");
+            f = f.replace(/,"r":dr/g, "");
+            e = [];
+            f = eval("var __r=[];var QS=function (){};QS.prototype.api=function(o){__r.push(o)};var je=new QS;" + f + ';__r;')
+            for (let i = 0, max = f.length; i < max; i++) {
+                if (f[i].i === 'search')
+                    e.push(f[i].h)
+                if (f[i].i === 'lfoot')
+                    e.push(f[i].h)
+            }
+            return `<script>${googleJs}</script>` + e.join('')
+        }
     }
 
     function makeId(len) {
