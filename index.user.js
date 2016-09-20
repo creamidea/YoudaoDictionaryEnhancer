@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youdao Dictionary Enhancer
 // @namespace    http://tampermonkey.net/
-// @version      1.1.1
+// @version      1.1.2
 // @description  search words Celerity
 // @author       creamidea
 // @match        http://dict.youdao.com/*
@@ -19,7 +19,7 @@
 // ==/UserScript==
 
 // changelog:
-// version 1.1 add you translation icon
+// version 1.1 add translation function in etymoline area
 // version 1.0 initial release
 
 GM_addStyle (GM_getResourceText("nprogress_css"));
@@ -64,7 +64,7 @@ GM_addStyle (".etymoline .hint {text-align: center;font-size: 24px;margin: 24px 
         var range = document.createRange();
         var targetSel = this.getSelection();
         var $sltContainer = $('#'+sltContainerName);
-        var selectionText = targetSel.toString();
+        var selectionText = encodeURIComponent(targetSel.toString());
         var $youdaoSearchButton = $('#'+youdaoSearchButtonId);
         if ($sltContainer.length === 0)
             $sltContainer = $('<div id='+sltContainerName+' />').appendTo('body');
