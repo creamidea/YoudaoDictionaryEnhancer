@@ -2,7 +2,7 @@
 // @name         Youdao Dictionary Enhancer
 // @namespace    http://tampermonkey.net/
 // @homepage     https://github.com/creamidea/YoudaoDictionaryEnhancer
-// @version      1.2.0
+// @version      1.2.1
 // @description  Search words in Celerity
 // @author       creamidea
 // @match        http://*.youdao.com/*
@@ -22,7 +22,7 @@
 // ==/UserScript==
 
 // changelog:
-// version 1.2 add record of google define 
+// version 1.2 add record of google define
 // version 1.1 add translation function in etymoline area
 // version 1.0 initial release
 
@@ -31,6 +31,8 @@ GM_addStyle('body{font-famile:"Hiragino Sans GB",STHeiti,"Microsoft YaHei","Wenq
 GM_addStyle('.youdao-trans-icon {position: absolute;border-radius: 5px;padding: 3px; background-color: rgb(245, 245, 245);box-sizing: content-box;cursor: pointer;height: 18px;width: 18px;z-index: 2147483647;border: 1px solid rgb(220, 220, 220);color: rgb(51, 51, 51);}');
 GM_addStyle('.etymoline .hint {text-align: center;font-size: 24px;margin: 24px 0;color: rebeccapurple;}');
 GM_addStyle('#container{background: #f6f4ec;border-radius: 6px;box-shadow: 2px 2px 9px 1px gray;padding-left: 16px;padding-right: 16px;padding-bottom: 26px;margin-top: 16px;}');
+GM_addStyle('.c-topbar-wrapper.setTop{top:0 !important;box-shadow: 2px 2px 4px #e5e5e5;}');
+GM_addStyle('#phrsListTab h2.wordbook-js{overflow: visible;}');
 GM_addStyle('.keyword{font-family: Georgia,"Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Arial,sans-serif; font-size: 39px;border-bottom: 2px gray dotted;}');
 GM_addStyle('#phrsListTab .trans-container>ul{font-size: 16px;} #phrsListTab .trans-container>ul>li{margin: 4px auto;}');
 GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
@@ -320,7 +322,7 @@ GM_addStyle('.c-topbar-wrapper{box-shadow: 0 0 0 #fcfcfe;}');
         // trim doc
         // $doc.querySelector('.srg').remove();
         $doc.querySelector('.hd').remove();
-        $doc.querySelector('hr').remove();
+        if ($doc.querySelector('hr')) $doc.querySelector('hr').remove();
 
         $googleFrame.contents().find('head').html($doc.head.innerHTML);
         $googleFrame.contents().find('body').html('<h1>被你发现了 XD</h1>' + $doc.body.innerHTML);
