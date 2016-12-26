@@ -2,7 +2,7 @@
 // @name         Youdao Dictionary Enhancer
 // @namespace    http://tampermonkey.net/
 // @homepage     https://github.com/creamidea/YoudaoDictionaryEnhancer
-// @version      1.2.1
+// @version      1.2.3
 // @description  Search words in Celerity
 // @author       creamidea
 // @match        http://*.youdao.com/*
@@ -33,7 +33,7 @@ GM_addStyle('.etymoline .hint {text-align: center;font-size: 24px;margin: 24px 0
 GM_addStyle('#container{background: #f6f4ec;border-radius: 6px;box-shadow: 2px 2px 9px 1px gray;padding-left: 16px;padding-right: 16px;padding-bottom: 26px;margin-top: 16px;}');
 GM_addStyle('.c-topbar-wrapper.setTop{top:0 !important;box-shadow: 2px 2px 4px #e5e5e5;}');
 GM_addStyle('#phrsListTab h2.wordbook-js{overflow: visible;}');
-GM_addStyle('.keyword{font-family: Georgia,"Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Arial,sans-serif; font-size: 39px;border-bottom: 2px gray dotted;}');
+GM_addStyle('.keyword{font-family: Georgia,"Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Arial,sans-serif; font-size: 39px;border-bottom: 2px gray dotted; line-height: 1;}');
 GM_addStyle('#phrsListTab .trans-container>ul{font-size: 16px;} #phrsListTab .trans-container>ul>li{margin: 4px auto;}');
 GM_addStyle('li .collinsMajorTrans{background: gainsboro !important;}');
 GM_addStyle('.c-topbar-wrapper{box-shadow: 0 0 0 #fcfcfe;}');
